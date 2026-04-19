@@ -40,20 +40,25 @@ export async function proxy(request: NextRequest) {
     try {
       const sessionResponse = await checkSession();
 
-      // If session check successful, update cookies from response headers
-      if (sessionResponse.headers["set-cookie"]) {
+      // If session check successful, allow request to proceed
+      if (sessionResponse.status === 200) {
         const response = NextResponse.next();
         const setCookieHeaders = sessionResponse.headers["set-cookie"];
 
-        if (Array.isArray(setCookieHeaders)) {
-          setCookieHeaders.forEach((cookie) => {
-            response.headers.append("Set-Cookie", cookie);
-          });
-        } else if (typeof setCookieHeaders === "string") {
-          response.headers.set("Set-Cookie", setCookieHeaders);
+        if (setCookieHeaders) {
+          if (Array.isArray(setCookieHeaders)) {
+            setCookieHeaders.forEach((cookie) => {
+              response.headers.append("Set-Cookie", cookie);
+            });
+          } else if (typeof setCookieHeaders === "string") {
+            response.headers.set("Set-Cookie", setCookieHeaders);
+          }
         }
 
         return response;
+      } else {
+        // If session check failed, redirect to sign in
+        return NextResponse.redirect(new URL("/sign-in", request.url));
       }
     } catch {
       // If session refresh fails, redirect to sign in
@@ -72,19 +77,24 @@ export async function proxy(request: NextRequest) {
       const sessionResponse = await checkSession();
 
       // If session check successful, update cookies and redirect to home
-      if (sessionResponse.headers["set-cookie"]) {
+      if (sessionResponse.status === 200) {
         const response = NextResponse.redirect(new URL("/", request.url));
         const setCookieHeaders = sessionResponse.headers["set-cookie"];
 
-        if (Array.isArray(setCookieHeaders)) {
-          setCookieHeaders.forEach((cookie) => {
-            response.headers.append("Set-Cookie", cookie);
-          });
-        } else if (typeof setCookieHeaders === "string") {
-          response.headers.set("Set-Cookie", setCookieHeaders);
+        if (setCookieHeaders) {
+          if (Array.isArray(setCookieHeaders)) {
+            setCookieHeaders.forEach((cookie) => {
+              response.headers.append("Set-Cookie", cookie);
+            });
+          } else if (typeof setCookieHeaders === "string") {
+            response.headers.set("Set-Cookie", setCookieHeaders);
+          }
         }
 
         return response;
+      } else {
+        // If session check failed, allow to proceed to auth route
+        return NextResponse.next();
       }
     } catch {
       // If session refresh fails, allow to proceed to auth route
