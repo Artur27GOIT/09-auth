@@ -27,7 +27,10 @@ export const fetchNotes = async (
 };
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
-  const response = await api.get<Note>(`/notes/${id}`, await withServerCookies());
+  const response = await api.get<Note>(
+    `/notes/${id}`,
+    await withServerCookies(),
+  );
   return response.data;
 };
 
@@ -36,11 +39,11 @@ export const getMe = async (): Promise<User> => {
   return response.data;
 };
 
-export const checkSession = async (): Promise<User | null> => {
+export const checkSession = async () => {
   const response = await api.get<User | null>(
     "/auth/session",
     await withServerCookies(),
   );
 
-  return response.data;
+  return response;
 };

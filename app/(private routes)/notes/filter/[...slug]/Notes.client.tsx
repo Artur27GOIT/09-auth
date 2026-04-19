@@ -51,13 +51,17 @@ export default function NotesClient({ tag }: { tag: string }) {
         }}
       />
 
-      <NoteList notes={data.notes} />
+      {data.notes && data.notes.length > 0 && (
+        <>
+          <NoteList notes={data.notes} />
 
-      <Pagination
-        pageCount={data.totalPages}
-        forcePage={page - 1}
-        onPageChange={(selected) => setPage(selected + 1)}
-      />
+          <Pagination
+            pageCount={data.totalPages}
+            forcePage={page - 1}
+            onPageChange={(selected) => setPage(selected + 1)}
+          />
+        </>
+      )}
     </div>
   );
 }

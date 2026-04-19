@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { checkSession } from "./lib/api/serverApi";
 
 const privateRoutePrefixes = ["/notes", "/profile"];
 const authRoutePrefixes = ["/sign-in", "/sign-up"];
@@ -9,18 +10,55 @@ const matchesRoute = (pathname: string, prefixes: string[]) =>
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const hasAuthToken =
-    Boolean(request.cookies.get("accessToken")?.value) ||
-    Boolean(request.cookies.get("refreshToken")?.value);
+  const accessToken = request.cookies.get("accessToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
+  const hasAccessToken = Boolean(accessToken);
+  const hasRefreshToken = Boolean(refreshToken);
 
-  if (!hasAuthToken && matchesRoute(pathname, privateRoutePrefixes)) {
+  // If no tokens at all, check if private route
+  if (
+    !hasAccessToken &&
+    !hasRefreshToken &&
+    matchesRoute(pathname, privateRoutePrefixes)
+  ) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
-  if (hasAuthToken && matchesRoute(pathname, authRoutePrefixes)) {
+  // If has access token and trying to access auth route
+  if (hasAccessToken && matchesRoute(pathname, authRoutePrefixes)) {
     return NextResponse.redirect(new URL("/profile", request.url));
+  }
+
+  // If has refresh token but no access token, try to refresh session
+  if (
+    !hasAccessToken &&
+    hasRefreshToken &&
+    matchesRoute(pathname, privateRoutePrefixes)
+  ) {
+    try {
+      const sessionResponse = await checkSession();
+
+      // If session check successful, update cookies from response headers
+      if (sessionResponse.headers["set-cookie"]) {
+        const response = NextResponse.next();
+        const setCookieHeaders = sessionResponse.headers["set-cookie"];
+
+        if (Array.isArray(setCookieHeaders)) {
+          setCookieHeaders.forEach((cookie) => {
+            response.headers.append("Set-Cookie", cookie);
+          });
+        } else if (typeof setCookieHeaders === "string") {
+          response.headers.set("Set-Cookie", setCookieHeaders);
+        }
+
+        return response;
+      }
+    } catch {
+      // If session refresh fails, redirect to sign in
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
   }
 
   return NextResponse.next();
