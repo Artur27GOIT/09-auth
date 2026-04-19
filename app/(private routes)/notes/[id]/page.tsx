@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { fetchNoteById } from "@/lib/api/serverApi";
+import NoteDetailsClient from "./NoteDetails.client";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -25,12 +26,5 @@ export async function generateMetadata({
 
 export default async function NotePage({ params }: PageProps) {
   const { id } = await params;
-  const note = await fetchNoteById(id);
-
-  return (
-    <div>
-      <h1>{note.title}</h1>
-      <p>{note.content}</p>
-    </div>
-  );
+  return <NoteDetailsClient id={id} />;
 }
