@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
 
   // If has access token and trying to access auth route
   if (hasAccessToken && matchesRoute(pathname, authRoutePrefixes)) {
-    return NextResponse.redirect(new URL("/profile", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // If has refresh token but no access token, try to refresh session
