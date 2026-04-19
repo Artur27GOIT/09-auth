@@ -2,11 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { api } from "../../api";
 import { isAxiosError } from "axios";
-import {
-  clearAuthCookies,
-  logErrorResponse,
-  syncAuthCookies,
-} from "../../_utils/utils";
+import { logErrorResponse } from "../../_utils/utils";
 
 export async function GET() {
   try {
@@ -18,23 +14,39 @@ export async function GET() {
       return NextResponse.json(null, { status: 200 });
     }
 
-    const apiRes = await api.get("auth/session", {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-    });
+    try {
+      const apiRes = await api.get("auth/session", {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      });
 
-    await syncAuthCookies(apiRes.headers["set-cookie"]);
+      const setCookie = apiRes.headers["set-cookie"];
 
-    return NextResponse.json(apiRes.data ?? null, { status: apiRes.status });
+      if (setCookie) {
+        const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+        for (const cookieStr of cookieArray) {
+          // Parse simple cookie string format: name=value; path=/; etc.
+          const parts = cookieStr.split(";");
+          if (parts[0]) {
+            const [name, value] = parts[0].split("=");
+            if (name && value) {
+              cookieStore.set(name.trim(), value.trim());
+            }
+          }
+        }
+      }
+
+      return NextResponse.json(apiRes.data, { status: 200 });
+    } catch {
+      return NextResponse.json(null, { status: 200 });
+    }
   } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error.response?.data);
-      await clearAuthCookies();
       return NextResponse.json(null, { status: 200 });
     }
     logErrorResponse({ message: (error as Error).message });
-    await clearAuthCookies();
     return NextResponse.json(null, { status: 200 });
   }
 }

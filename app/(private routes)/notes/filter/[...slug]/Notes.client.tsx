@@ -29,7 +29,7 @@ export default function NotesClient({ tag }: { tag: string }) {
     queryKey: ["notes", tag, page, debouncedSearch],
     queryFn: () =>
       fetchNotes({
-        tag: tag === "all" ? undefined : tag,
+        tag: tag === "all" ? "" : tag,
         page,
         search: debouncedSearch,
         perPage: 12,

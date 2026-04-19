@@ -61,6 +61,37 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // If has refresh token but no access token, and trying to access auth route
+  // Try to refresh session - if successful, redirect to home
+  if (
+    !hasAccessToken &&
+    hasRefreshToken &&
+    matchesRoute(pathname, authRoutePrefixes)
+  ) {
+    try {
+      const sessionResponse = await checkSession();
+
+      // If session check successful, update cookies and redirect to home
+      if (sessionResponse.headers["set-cookie"]) {
+        const response = NextResponse.redirect(new URL("/", request.url));
+        const setCookieHeaders = sessionResponse.headers["set-cookie"];
+
+        if (Array.isArray(setCookieHeaders)) {
+          setCookieHeaders.forEach((cookie) => {
+            response.headers.append("Set-Cookie", cookie);
+          });
+        } else if (typeof setCookieHeaders === "string") {
+          response.headers.set("Set-Cookie", setCookieHeaders);
+        }
+
+        return response;
+      }
+    } catch {
+      // If session refresh fails, allow to proceed to auth route
+      return NextResponse.next();
+    }
+  }
+
   return NextResponse.next();
 }
 
