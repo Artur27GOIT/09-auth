@@ -1,95 +1,75 @@
 .mainContent {
-  min-height: calc(100vh - 160px);
-  padding: 32px 16px 48px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
 }
 
 .profileCard {
-  width: min(100%, 640px);
-  margin: 0 auto;
-  padding: 32px;
-  border-radius: 24px;
+  max-width: 500px;
+  width: 100%;
   background-color: #ffffff;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  text-align: left;
 }
 
 .formTitle {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.editProfileButton {
-  padding: 10px 16px;
-  border-radius: 999px;
-  background-color: #2563eb;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  text-align: left;
 }
 
 .avatarWrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .avatar {
-  border-radius: 999px;
+  border-radius: 50%;
   object-fit: cover;
 }
 
 .profileInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  font-size: 1rem;
-}
-
-.usernameWrapper {
+  font-size: 18px;
+  color: #333;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  align-items: flex-start;
 }
 
-.input {
+.usernameWrapper {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  font: inherit;
-}
-
-.actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 8px;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.saveButton,
-.cancelButton {
-  padding: 12px 18px;
-  border-radius: 12px;
-  font: inherit;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.editProfileButton {
+  padding: 8px 16px;
+  font-size: 16px;
   font-weight: 600;
+  background-color: #0d6efd;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.saveButton {
-  border: none;
-  background-color: #2563eb;
-  color: #fff;
-}
-
-.cancelButton {
-  border: 1px solid #d1d5db;
-  background-color: #fff;
-  color: #111827;
+.editProfileButton:hover {
+  background-color: #0b5ed7;
 }
