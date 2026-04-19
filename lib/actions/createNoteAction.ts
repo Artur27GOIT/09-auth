@@ -1,6 +1,6 @@
 "use server";
 
-import { createNote, type CreateNotePayload } from "@/lib/api";
+import { createNote, type CreateNotePayload } from "@/lib/api/clientApi";
 import { redirect } from "next/navigation";
 
 export async function createNoteAction(formData: FormData) {

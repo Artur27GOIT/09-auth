@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { NoteTag } from "@/types/note";
 
 export const initialDraft: {
   title: string;
   content: string;
-  tag: string;
+  tag: NoteTag;
 } = {
   title: "",
   content: "",
@@ -15,7 +16,7 @@ interface NoteDraftState {
   draft: {
     title: string;
     content: string;
-    tag: string;
+    tag: NoteTag;
   };
   setDraft: (note: Partial<NoteDraftState["draft"]>) => void;
   clearDraft: () => void;

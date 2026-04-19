@@ -3,8 +3,9 @@
 import css from "./NoteForm.module.css";
 import { useNoteStore } from "@/lib/store/noteStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createNote } from "@/lib/api";
+import { createNote } from "@/lib/api/clientApi";
 import { useRouter } from "next/navigation";
+import type { NoteTag } from "@/types/note";
 
 export default function NoteForm() {
   const { draft, setDraft, clearDraft } = useNoteStore();
@@ -68,7 +69,7 @@ export default function NoteForm() {
           className={css.select}
           required
           value={draft.tag}
-          onChange={(e) => setDraft({ tag: e.target.value })}
+          onChange={(e) => setDraft({ tag: e.target.value as NoteTag })}
         >
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>

@@ -1,0 +1,95 @@
+.mainContent {
+  min-height: calc(100vh - 160px);
+  padding: 32px 16px 48px;
+}
+
+.profileCard {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 32px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.formTitle {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.editProfileButton {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background-color: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.avatarWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 1rem;
+}
+
+.usernameWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 12px 18px;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveButton {
+  border: none;
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.cancelButton {
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  color: #111827;
+}
